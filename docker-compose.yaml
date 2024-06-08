@@ -1,0 +1,125 @@
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - gateway
+      # - users
+      # - auth
+      # - finances
+      # - analytics
+
+  gateway:
+    container_name: gateway
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    volumes:
+      - ./gateway:/var/www/html:delegated
+      - gateway_vendor_data:/var/www/html/vendor
+      - gateway_var_data:/var/www/html/var
+    depends_on:
+      - redis
+      - users
+      # - auth
+      # - finances
+      # - analytics
+
+  users:
+    container_name: users
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    volumes:
+      - ./users:/var/www/html:delegated
+      - users_vendor_data:/var/www/html/vendor
+      - users_var_data:/var/www/html/var
+    depends_on:
+      - users-db
+
+  users-db:
+    container_name: mariadb
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=users
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:8081"
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis_data:
+  gateway_vendor_data:
+  gateway_var_data:
+  users_vendor_data:
+  users_var_data:
+  mariadb_data:
+
+  # auth:
+  #   build:
+  #     context: ./auth
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./auth:/var/www/html
+  #   environment:
+  #     - DATABASE_HOST=auth-db
+  #     - DATABASE_USER=root
+  #     - DATABASE_PASSWORD=root
+  #     - DATABASE_NAME=auth
+  #   depends_on:
+  #     - auth-db
+
+  # auth-db:
+  #   image: mariadb:latest
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=root
+  #     - MYSQL_DATABASE=auth
+
+  # finances:
+  #   build:
+  #     context: ./finances
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./finances:/var/www/html
+  #   environment:
+  #     - MONGO_URI=mongodb://finances-db:27017/finances
+  #   depends_on:
+  #     - finances-db
+
+  # finances-db:
+  #   image: mongo:latest
+
+  # analytics:
+  #   build:
+  #     context: ./analytics
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./analytics:/var/www/html
+  #   environment:
+  #     - MONGO_URI=mongodb://analytics-db:27017/analytics
+  #   depends_on:
+  #     - analytics-db
+
+  # analytics-db:
+  #   image: mongo:latest
