@@ -19,12 +19,10 @@ COPY . .
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install
 
-# Install gRPC PHP extension
-RUN pecl install grpc && \
-    docker-php-ext-enable grpc
+# Ensure permissions for var directory
+RUN chown -R www-data:www-data /var/www/html/var
 
-# Expose the gRPC port (replace 50051 with your desired port)
-EXPOSE 50051
-
-# Start the PHP-FPM server
 CMD ["php-fpm"]
+
+# Expose the port PHP-FPM runs on
+EXPOSE 9000
