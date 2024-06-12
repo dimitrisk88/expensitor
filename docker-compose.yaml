@@ -36,8 +36,6 @@ services:
       - ./users:/var/www/html:delegated
     depends_on:
       - users-db
-    ports:
-      - "9000:9000"
 
   users-db:
     container_name: mariadb

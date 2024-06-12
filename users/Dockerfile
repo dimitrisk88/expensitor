@@ -25,4 +25,4 @@ RUN chown -R www-data:www-data /var/www/html/var
 CMD ["php-fpm"]
 
 # Expose the port PHP-FPM runs on
-EXPOSE 9000
+EXPOSE 7000
