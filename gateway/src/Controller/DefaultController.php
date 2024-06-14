@@ -20,7 +20,8 @@ class DefaultController extends AbstractController
     #[Route('/', name: 'app_default')]
     public function index(): JsonResponse
     {
-        $response = $this->client->request('GET', 'http://users:7000/default');
+        $response = $this->client->request('GET', 'http://users:9000/');
+        dump($response->getContent());
         $cacheKey = 'test_cache_key';
         $cacheItem = $this->cache->getItem($cacheKey);
         if (!$cacheItem->isHit()) {

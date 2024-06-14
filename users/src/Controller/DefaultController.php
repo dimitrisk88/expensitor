@@ -14,7 +14,7 @@ class DefaultController extends AbstractController
     ) {
     }
     
-    #[Route('/default', name: 'app_default')]
+    #[Route('/', name: 'app_default')]
     public function index(): JsonResponse
     {
         $user = $this->userRepository->findOneById(1);
