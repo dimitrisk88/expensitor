@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Document\Expense;
+use App\Document\Manager\ValidationAwareDocumentManager;
 use App\Repository\ExpenseRepository;
-use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,7 +13,7 @@ class DefaultController extends AbstractController
 {
     public function __construct(
         private ExpenseRepository $expenseRepository,
-        private DocumentManager $dm,
+        private ValidationAwareDocumentManager $dm,
     ) {
     }
 
