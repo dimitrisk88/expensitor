@@ -13,29 +13,30 @@ class DefaultController extends AbstractController
 {
     public function __construct(
         private CacheInterface $cache,
-        private HttpClientInterface $client,
+        private HttpClientInterface $httpClient,
     ) {
     }
 
     #[Route('/', name: 'app_default')]
     public function index(): JsonResponse
     {
-        $response = $this->client->request('GET', 'http://users:9000/');
-        dump($response->getContent());
-        $cacheKey = 'test_cache_key';
+        $cacheKey = 'microservice_cache_key';
+        // $this->cache->delete($cacheKey);
         $cacheItem = $this->cache->getItem($cacheKey);
         if (!$cacheItem->isHit()) {
-            $data = 'This data is generated at ' . date('Y-m-d H:i:s');
-            $cacheItem->set($data);
+            $response = $this->httpClient->request('GET', 'http://users_server/');
+            $userData = $response->toArray();
+            $userData['data'] = 'This data is generated at ' . date('Y-m-d H:i:s');
+            $cacheItem->set($userData);
             $this->cache->save($cacheItem);
             $message = 'Cache miss. Data generated and stored in cache.';
         } else {
-            $data = $cacheItem->get();
+            $userData = $cacheItem->get();
             $message = 'Cache hit. Data retrieved from cache.';
         }
         return $this->json([
+            'userData' => $userData,
             'message' => $message,
-            'path' => 'src/Controller/DefaultController.php',
         ]);
     }
 }

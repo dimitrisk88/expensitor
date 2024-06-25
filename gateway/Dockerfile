@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     nano \
     net-tools \
     iputils-ping \
-    && docker-php-ext-install zip pdo pdo_mysql
+    && docker-php-ext-install zip
 
 WORKDIR /var/www/html
 
@@ -16,7 +16,6 @@ COPY --from=composer/composer:latest-bin /composer /usr/local/bin
 
 # Copy the application files
 COPY . .
-# COPY ./www.conf /usr/local/etc/php-fpm.d/www.conf
 
 # Install dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1

@@ -16,7 +16,6 @@ COPY --from=composer/composer:latest-bin /composer /usr/local/bin
 
 # Copy the application files
 COPY . .
-# COPY ./www.conf /usr/local/etc/php-fpm.d/www.conf
 
 # Install dependencies
 ENV COMPOSER_ALLOW_SUPERUSER=1

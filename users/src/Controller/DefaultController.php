@@ -19,10 +19,6 @@ class DefaultController extends AbstractController
     {
         $user = $this->userRepository->findOneById(1);
         
-        return $this->json([
-            $user->getName(),
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/DefaultController.php',
-        ]);
+        return $this->json(['name' => $user->getName()]);
     }
 }
